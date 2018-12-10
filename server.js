@@ -1,12 +1,19 @@
-const webpack = require("webpack");
-const config = require("./webpack.config");
-const WebpackDevServer = require("webpack-dev-server");
+const nodemon = require('nodemon');
+const path = require('path');
 
-const server = new WebpackDevServer(webpack(config));
-
-server.listen(3200,'localhost',function(error){
-    if(error){
-        return console.log(error);
-    }
-    console.log("Server run @ http://localhost:3200");
+nodemon({
+  execMap: {
+    js: 'node'
+  },
+  script: path.join(__dirname, 'server/server'),
+  ignore: [],
+  watch: process.env.NODE_ENV !== 'production' ? ['server/*'] : false,
+  ext: 'js'
+})
+.on('restart', function() {
+  console.log('Server restarted!');
+})
+.once('exit', function () {
+  console.log('Shutting down server');
+  process.exit();
 });
